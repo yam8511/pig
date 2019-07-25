@@ -1,9 +1,14 @@
 import Phaser from 'phaser'
 import Rotate from './rotate'
 import Cover from './cover'
+import Street from './street'
+import Player from './player'
 import rotateImg from './assets/rotate-device.png'
 import starImg from './assets/star.jpg'
 import startImg from './assets/start.png'
+import streetImg from './assets/street.png'
+import playerImg from './assets/player.png'
+import playerRunImg from './assets/player_run.png'
 
 export default class Game {
 
@@ -11,6 +16,8 @@ export default class Game {
     rotate: Rotate
     cover: Cover
     isGameStart: Boolean
+    street: Street
+    player: Player
 
     constructor() {
         const config = {
@@ -43,9 +50,18 @@ export default class Game {
         const scene: Phaser.Scene = this.game.scene.scenes[0]
         scene.load.image('rotate', rotateImg)
         scene.load.image('bg', starImg)
+        scene.load.image('street', streetImg)
         scene.load.spritesheet('start', startImg, {
             frameWidth: 190,
             frameHeight: 58,
+        })
+        scene.load.spritesheet('player', playerImg, {
+            frameWidth: 34,
+            frameHeight: 60,
+        })
+        scene.load.spritesheet('player_run', playerRunImg, {
+            frameWidth: 33,
+            frameHeight: 65,
         })
     }
 
@@ -53,10 +69,13 @@ export default class Game {
     create = () => {
         const scene: Phaser.Scene = this.game.scene.scenes[0]
 
+        this.street = new Street(this, scene)
         this.cover = new Cover(this, scene, () => {
             this.isGameStart = true
+            this.street.Show()
         })
         this.rotate = new Rotate(this, scene)
+        this.player = new Player(this, scene)
 
         // 偵測螢幕尺寸
         this.detectScreenSize()
@@ -65,6 +84,7 @@ export default class Game {
 
     // 運行遊戲
     update = () => {
+        this.player.Show()
     }
 
     // 螢幕寬度
